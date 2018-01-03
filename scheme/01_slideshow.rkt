@@ -1,4 +1,7 @@
 #lang slideshow
+(require slideshow/code)
+
+;; Define
 ;; define variables or functions
 (define c (circle 10))
 (define r (rectangle 10 20))
@@ -114,3 +117,28 @@
 ; note that you must use apply because vc-append doeas not accept a list
 ; as an argument but many arguments
 (apply vc-append (rainbow (square 10)))
+
+
+;; Macros
+; macros are syntactic forms different from functions like this
+; example from slideshow/code where (circle 10) is not evaluated
+(code (circle 10))
+
+; macros allows you to introduce new syntactic forms using
+; define-syntax with syntax-rules
+; instances of the (pict+code expr) pattern in a program
+; are replaced by instances of the corresponding template (hc-append 10 etc...)
+(define-syntax pict+code
+  (syntax-rules ()
+    ((pict+code expr)
+     (hc-append 10
+                expr
+                (code expr)))))
+(pict+code (circle 10))
+
+; if we try to define an analogous example using funcions
+; we get an incorrect result because (circle 10) is evaluated
+; before being passed to the function
+(define (pictcode expr)
+  (hc-append 10 expr (code expr)))
+(pictcode (circle 10))
