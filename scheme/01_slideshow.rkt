@@ -1,4 +1,5 @@
 #lang slideshow
+;; define variables or functions
 (define c (circle 10))
 (define r (rectangle 10 20))
 (define (square n)
@@ -38,8 +39,9 @@
 (checkerboard (square 10))
 (checkerboard (filled-ellipse 10 10))
 
-; functions are values just like numbers and pictures
-; hence functions can accept other functions as argument
+
+;; functions are values just like numbers and pictures
+;; hence functions can accept other functions as argument
 (define (series mk)
   (hc-append 4 (mk 5) (mk 10) (mk 20)))
 ; pass a picture to (serie)
@@ -48,3 +50,50 @@
 (series square)
 ; passing anonymous functions as arguments is quite handy
 (series (lambda (size) (checkerboard (square size))))
+
+
+;; Lexical Scope
+;; lexical scope of an identifier depends on his textual environment
+; the uses mk in each lambda refer to the argument of rgb-series
+; since that's the binding that is textually in scope
+(define (rgb-series mk)
+  (vc-append
+   (series (lambda (sz) (colorize (mk sz) "red")))
+   (series (lambda (sz) (colorize (mk sz) "green")))
+   (series (lambda (sz) (colorize (mk sz) "blue")))))
+
+(rgb-series circle)
+(rgb-series square)
+
+; rgb-maker takes a function and returns a new one that
+; remembers and uses the original function (the one passed as args)
+(define (rgb-maker mk)
+  (lambda (sz)
+    (vc-append (colorize (mk sz) "red")
+               (colorize (mk sz) "green")
+               (colorize (mk sz) "blue"))))
+(series (rgb-maker circle))
+(series (rgb-maker square))
+
+; some intricated examples of lexical scoping using let, let* and display
+; (~a x "\n") is to convert x to string and contatenate it to "\n"
+(let ((x 1))
+  (let ((x 2))
+    (let ((x 3) (f (lambda ()
+               (display (~a x "\n")))))
+      (f)))) ; prints 2
+
+(let ((x 1))
+  (let ((x 2))
+    (let* ((x 3) (f (lambda ()
+               (display (~a x "\n")))))
+      (f)))) ; prints 3
+
+(let ((x 1))
+  (let ((x 2))
+    (let ((x 3) (f (lambda ()
+             (display x))))
+      (f)
+      (let ((g (lambda ()
+                 (display (~a x "\n")))))
+        (g))))) ; prints 23
