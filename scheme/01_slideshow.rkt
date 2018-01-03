@@ -27,11 +27,24 @@
 
 ; a better implementation is to create a checkboard function using
 ; previous functions (checker) and (four)
-(define (checkboard p)
+(define (checkerboard p)
+  ; use let* to define bindings sequentially and not in parallel like the
+  ; normal let otherwise bindings cannot refer to each other
   (let* ((whitecell (colorize p "WhiteSmoke"))
          (blackcell (colorize p "Black"))
          (block (checker whitecell blackcell))
          (block4 (four block)))
     (four block4)))
-(checkboard (square 10))
-(checkboard (filled-ellipse 10 10))
+(checkerboard (square 10))
+(checkerboard (filled-ellipse 10 10))
+
+; functions are values just like numbers and pictures
+; hence functions can accept other functions as argument
+(define (series mk)
+  (hc-append 4 (mk 5) (mk 10) (mk 20)))
+; pass a picture to (serie)
+(series circle)
+; pass a function to (series)
+(series square)
+; passing anonymous functions as arguments is quite handy
+(series (lambda (size) (checkerboard (square size))))
