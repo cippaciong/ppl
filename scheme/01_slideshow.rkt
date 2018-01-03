@@ -97,3 +97,20 @@
       (let ((g (lambda ()
                  (display (~a x "\n")))))
         (g))))) ; prints 23
+
+;; Lists
+(list "red" "green" "blue")
+(list (circle 10) (square 10))
+
+; map takes one element of the list at a time and applies a function
+(define (rainbow p)
+  (map (lambda (color)
+         (colorize p color))
+       (list "red" "orange" "yellow" "green" "blue" "purple")))
+(rainbow (square 15))
+
+; apply takes all the elements of the list and applies a function
+; such function must take any number of arguments (like vc-append)
+; note that you must use apply because vc-append doeas not accept a list
+; as an argument but many arguments
+(apply vc-append (rainbow (square 10)))
