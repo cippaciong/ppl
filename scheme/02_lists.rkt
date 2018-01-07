@@ -81,10 +81,59 @@
         [tail (rest list)])
   (if [empty? tail] ; is tail = ()?
       head          ; then: return head
-      (minimum      ; else: call minimum recursively placing the minumim between
+      (minimum1      ; else: call minimum recursively placing the minumim between
                     ; head and (first tail) at the beginning of the new list
        (if [< head (first tail)]     ; if head < first element of tail
            (cons head (rest tail))   ; then: call recursively replacing the first element of tail with head
            tail)))))                 ; else: discard head and call recusrively with tail
 (minimum1 (list 3 5 6 73 1 23 4)) ;1
 (minimum1 (list 3 5 6 23 4)) ;3
+
+;cond examples
+(let ([lst '(-1 -2 -3 -4 -5 -6 -7)])
+  (cond
+    [(andmap positive? lst) (printf "List has only positive items\n")]
+    [(andmap negative? lst) (printf "List has only negative items\n")]
+    [(ormap positive? lst) (printf "List has at least one positive item\n")]
+    [(ormap negative? lst) (printf "List has at least one negative item\n")] ; never reached
+    [else (display "List is not numeric")]))
+
+(define (my-length lst)
+  (cond
+    [(empty? lst) 0]
+    [else (+ 1 (my-length (rest lst)))]))
+(my-length '(0 1 2 3 4 5))
+
+; Remove strings from a list of elements using recursion
+(define (remove-strings lst)
+  (cond
+    [(empty? lst) empty] ;empty list
+    [(empty? (rest lst)) (if (string? (first lst)) empty lst)] ; list of one element
+    [else ;general case
+     (let ([h (first lst)])
+       (if (string? h)
+           (remove-strings (rest lst)) ;true
+           (cons h (remove-strings (rest lst)))))])) ;false
+(remove-strings '(1 2 3 4 5 6))
+(remove-strings '("a" "b" "banana" "42"))
+(remove-strings '(1 2 3 "a" 4 5 "b"))
+
+; Create a list iterator using closures
+(define (iter-list lst)
+  (let ([cur 0]
+        [top (length lst)])
+    (lambda ()
+      (cond
+        [(= cur top) '<<end>>]
+        [else
+         (let ([elem (list-ref lst cur)])
+           (set! cur (+ cur 1))
+           elem)]))))
+(define i (iter-list '(0 1 2 3 4 5)))
+(i)
+(i)
+(i)
+(i)
+(i)
+(i)
+(i)
