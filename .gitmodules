@@ -1,0 +1,3 @@
+[submodule "in_class_exercises"]
+	path = in_class_exercises
+	url = https://github.com/riccardotommasini/ppl
