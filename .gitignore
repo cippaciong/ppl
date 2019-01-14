@@ -1,2 +1,4 @@
 # Ignore DrRacket swap files
 *.rkt~
+# Ignore BEAM files
+*.beam
